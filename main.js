@@ -6,8 +6,10 @@ function createTimeBand(img) {
   var year = ee.Date(img.get('system:time_start')).get('year').subtract(2012);
   return ee.Image(year).byte().addBands(img);
 }
-var albedo01=imageCollection2.filterDate('2012-08-01', '2012-11-30').map(createTimeBand);
-var albedo02=albedo01.reduce(ee.Reducer.median());
+
+var imageCollection3=ee.ImageCollection("NOAA/VIIRS/001/VNP09GA")
+var albedo01=imageCollection3.filterDate('2012-08-01', '2012-11-30').map(createTimeBand);
+var albedo02=albedo01.reduce(ee.Reducer.percentile([30]));
 
 var collection01 =ee.ImageCollection('NOAA/VIIRS/DNB/MONTHLY_V1/VCMCFG')
   .filterDate('2012-08-01', '2012-11-30').map(createTimeBand);
@@ -22,8 +24,9 @@ var collection021 = collection021.expression(
 });
 var collection021 = collection021.set('system:time_start','2012-10-01'); 
 //var collection1 = ee.ImageCollection('NOAA/VIIRS/DNB/MONTHLY_V1/VCMCFG').filterDate('2013-08-01', '2013-11-30').select('avg_rad').reduce(ee.Reducer.median());
-var albedo11=imageCollection2.filterDate('2013-08-01', '2013-11-30').map(createTimeBand);
-var albedo12=albedo11.reduce(ee.Reducer.median());
+var albedo11=imageCollection3.filterDate('2013-08-01', '2013-11-30').map(createTimeBand);
+var albedo12=albedo11.reduce(ee.Reducer.percentile([30]));
+
   
 var collection11 = ee.ImageCollection('NOAA/VIIRS/DNB/MONTHLY_V1/VCMCFG')
   .filterDate('2013-08-01', '2013-11-30').map(createTimeBand);
@@ -38,8 +41,8 @@ var collection121 = collection121.expression(
       'VIIRS': collection121
 });
 var collection121 = collection121.set('system:time_start','2013-10-01');
-var albedo21=imageCollection2.filterDate('2014-08-01', '2014-11-30').map(createTimeBand);
-var albedo22=albedo21.reduce(ee.Reducer.median());  
+var albedo21=imageCollection3.filterDate('2014-08-01', '2014-11-30').map(createTimeBand);
+var albedo22=albedo21.reduce(ee.Reducer.percentile([30]));  
 var collection2 = ee.ImageCollection('NOAA/VIIRS/DNB/MONTHLY_V1/VCMCFG')
   .filterDate('2014-08-01', '2014-11-30').select('avg_rad').reduce(ee.Reducer.median());
   
@@ -57,8 +60,8 @@ var collection221 = collection221.expression(
       'VIIRS': collection221
 });
 var collection221 = collection221.set('system:time_start','2014-10-01');
-var albedo31=imageCollection2.filterDate('2015-08-01', '2015-11-30').map(createTimeBand);
-var albedo32=albedo31.reduce(ee.Reducer.median());   
+var albedo31=imageCollection3.filterDate('2015-08-01', '2015-11-30').map(createTimeBand);
+var albedo32=albedo31.reduce(ee.Reducer.percentile([30]));   
 var collection3 = ee.ImageCollection('NOAA/VIIRS/DNB/MONTHLY_V1/VCMCFG')
   .filterDate('2015-08-01', '2015-11-30').select('avg_rad').reduce(ee.Reducer.median());
   
@@ -75,8 +78,8 @@ var collection321 = collection321.expression(
       'VIIRS': collection321
 });
 var collection321 = collection321.set('system:time_start','2015-10-01');
-var albedo41=imageCollection2.filterDate('2016-08-01', '2016-11-30').map(createTimeBand);
-var albedo42=albedo41.reduce(ee.Reducer.median());     
+var albedo41=imageCollection3.filterDate('2016-08-01', '2016-11-30').map(createTimeBand);
+var albedo42=albedo41.reduce(ee.Reducer.percentile([30]));     
 var collection4 = ee.ImageCollection('NOAA/VIIRS/DNB/MONTHLY_V1/VCMCFG')
   .filterDate('2016-08-01', '2016-11-30').reduce(ee.Reducer.median());
   
@@ -93,8 +96,8 @@ var collection421 = collection421.expression(
 });
 var collection42 = collection42.set('system:time_start','2016-10-01'); 
 var collection421 = collection421.set('system:time_start','2016-10-01');
-var albedo51=imageCollection2.filterDate('2017-08-01', '2017-11-30').map(createTimeBand);
-var albedo52=albedo51.reduce(ee.Reducer.median());    
+var albedo51=imageCollection3.filterDate('2017-08-01', '2017-11-30').map(createTimeBand);
+var albedo52=albedo51.reduce(ee.Reducer.percentile([30]));    
 var collection5 = ee.ImageCollection('NOAA/VIIRS/DNB/MONTHLY_V1/VCMCFG')
   .filterDate('2017-08-01', '2017-11-30').reduce(ee.Reducer.median());
   
@@ -112,8 +115,8 @@ var collection521 = collection521.expression(
       'VIIRS': collection521
 });
 var collection521 = collection521.set('system:time_start','2017-10-01');
-var albedo61=imageCollection2.filterDate('2018-01-01', '2018-11-30').map(createTimeBand);
-var albedo62=albedo61.reduce(ee.Reducer.median());   
+var albedo61=imageCollection3.filterDate('2018-01-01', '2018-11-30').map(createTimeBand);
+var albedo62=albedo61.reduce(ee.Reducer.percentile([30]));   
 var collection61 = ee.ImageCollection('NOAA/VIIRS/DNB/MONTHLY_V1/VCMCFG')
   .filterDate('2018-01-01', '2018-11-30').map(createTimeBand);
   
@@ -180,10 +183,12 @@ var vizParams3 = {
   gamma: 9.0,
 };
 
-var albedo03=albedo02.select("Albedo_BSA_Band1_median").add(albedo02.select("Albedo_BSA_Band2_median"));
-albedo03.select("Albedo_BSA_Band1_median").add(albedo02.select("Albedo_BSA_Band3_median"));
-albedo03.select("Albedo_BSA_Band1_median").add(albedo02.select("Albedo_BSA_Band4_median"));
-var albedo=albedo03.select(["Albedo_BSA_Band1_median"]);
+var albedoS = ee.ImageCollection([albedo02,albedo12,albedo22,albedo32,albedo42,albedo52,albedo62]).median();
+print(albedoS);
+var albedo03=albedoS.select("I1_p30").add(albedoS.select("I2_p30"));
+albedo03.select("I1_p30").add(albedoS.select("I3_p30"));
+albedo03.select("I1_p30").add(albedoS.select("I4_p30"));
+var albedo=albedo03.select(["I1_p30"]);
 print(albedo);
 
 // Define an arbitrary region of interest.
@@ -198,17 +203,19 @@ var createConstantBand = function(image) {
 };
 // Smooth the image by convolving with the boxcar kernel.
 var collectionS3B = collectionS3.convolve(boxcar);
-var albedo=albedo.select("Albedo_BSA_Band1_median").unmask(0);
+var albedo=albedo.select("I1_p30").unmask(504);
 var albedoB = albedo.addBands(ee.Image(1));
 var collectionS3B = collectionS3B.addBands(ee.Image(1));
 
-
+var albedoRAW=albedoB
  //var albedo = albedo.expression('IMA/1370.5*0.14+0.0778+0.03',{'IMA':albedo.select("Albedo_BSA_Band1_median")});
- var albedoB = albedoB.expression('IMA*pen+ord',{'IMA':albedoB.select("Albedo_BSA_Band1_median"),'pen':0.0001136537233862081,'ord':0.04});
- var albedoB=albedoB.select("Albedo_BSA_Band1_median").unmask(0.08952334027393852);
-var collectionS4=collectionS3.select('avg_rad_median_mean').subtract(albedoB.select("Albedo_BSA_Band1_median"));
+ var albedoB = albedoB.expression('IMA*pen+ord',{'IMA':albedoB.select("I1_p30"),'pen':6.51973060199193E-06
+,'ord':0.005457731456686476+0.037369735174887814});//+0.0979860271892004
+
+ var albedoB=albedoB.select("I1_p30").unmask(0.008699625705382078+0.037369735174887814);
+var collectionS4=collectionS3.select('avg_rad_median_mean').subtract(albedoB.select("I1_p30"));
 //var max1=albedo.reduce(ee.Reducer.max());
-//var min1=albedo.reduce(ee.Reducer.min());
+//var min1=albedo.reduce(ee.Reducer.percentile([30]));
 var vizParams2 = {
   bands: [],
   min: 0,
@@ -218,7 +225,7 @@ var vizParams2 = {
 var VIIRS=collectionS4.select(['avg_rad_median_mean']).log10();
 // Compute the EVI using an expression.
 var evi = VIIRS.expression(
-  '22-1.3*VIIRS', {
+  '20.0-1.9*VIIRS', {
       'VIIRS': VIIRS
 });
 var vizParams2 = {
@@ -230,7 +237,8 @@ var vizParams2 = {
 
 if (0){    
 //Map.setCenter(-3.7353515625,40.463666324587685, 7);
-Map.addLayer(albedoB,{min: 0, max:0.14},'albedo');
+Map.addLayer(albedoB,{min: 0, max:1,  gamma: 9.0,},'albedoB');
+Map.addLayer(albedoRAW,{min: 0, max:14000,  gamma: 9.0,},'albedoRAW');
 //Map.addLayer(collection02,vizParams,'2012');
 //Map.addLayer(collection12,vizParams,'2013');
 //Map.addLayer(collection22,vizParams,'2014');
@@ -243,7 +251,6 @@ Map.addLayer(collectionS4,vizParams3,'2012-2018_albedo');
 
 //Map.addLayer(F162010_c1a,vizParams2,'2011');
 }
-
 
 var vizParams2 = {
   bands: ['constant'],
@@ -641,3 +648,4 @@ generateChart({
   lon: initialPoint.coordinates().get(0).getInfo(),
   lat: initialPoint.coordinates().get(1).getInfo()
 });
+
